@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Job Search | Resume Analyzer</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #17152d;
+      --muted: #68677d;
+      --primary: #6957e8;
+      --primary-dark: #5140cd;
+      --accent: #c64fd0;
+      --border: rgba(32, 28, 74, 0.1);
+      --shadow: 0 14px 38px rgba(49, 37, 122, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 90% 0%, rgba(217, 79, 194, 0.08), transparent 30rem),
+        #faf9ff;
+      font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding-bottom: 64px;
+    }
+
+    /* Navigation */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      color: var(--ink);
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .brand span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      color: #48465e;
+      font-size: 14px;
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary-dark);
+      background: #f0eeff;
+    }
+
+    /* Page introduction */
+    .intro {
+      padding: 48px 0 26px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      border: 1px solid rgba(105, 87, 232, 0.15);
+      border-radius: 999px;
+      color: var(--primary-dark);
+      background: #f1efff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(198, 79, 208, 0.12);
+    }
+
+    h1 {
+      margin-bottom: 12px;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.045em;
+    }
+
+    .gradient-text {
+      color: var(--primary);
+      background: linear-gradient(105deg, var(--primary-dark), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .intro p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    /* Search form */
+    .search-panel {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .search-fields {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(180px, 0.8fr) auto;
+      align-items: end;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 7px 2px;
+      color: #4b4960;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 48px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      outline: none;
+      color: var(--ink);
+      background: #fbfaff;
+      font-size: 13px;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .field input::placeholder {
+      color: #a09eb0;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(105, 87, 232, 0.12);
+    }
+
+    .search-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 11px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: 0 8px 18px rgba(105, 87, 232, 0.22);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .search-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 11px 23px rgba(105, 87, 232, 0.3);
+    }
+
+    .search-note {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* Results section */
+    .results-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 32px 0 16px;
+    }
+
+    .results-heading h2 {
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .results-heading p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .sort-select {
+      min-height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: #48465e;
+      background: #fff;
+      font-size: 12px;
+    }
+
+    /* Job cards */
+    .job-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .job-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 6px 22px rgba(49, 37, 122, 0.04);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .job-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(105, 87, 232, 0.25);
+      box-shadow: var(--shadow);
+    }
+
+    .job-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .job-main {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+    }
+
+    .company-icon {
+      display: grid;
+      flex: 0 0 46px;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      border-radius: 13px;
+      color: var(--primary-dark);
+      background: #f0eeff;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .job-title {
+      margin-bottom: 4px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .company-name {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .match-badge {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border: 1px solid #d9f0e1;
+      border-radius: 999px;
+      color: #287346;
+      background: #effaf2;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .job-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin: 16px 0 12px;
+      color: #56546b;
+      font-size: 12px;
+    }
+
+    .job-description {
+      max-width: 850px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .job-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 17px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(32, 28, 74, 0.07);
+    }
+
+    .job-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      border-radius: 7px;
+      color: #595577;
+      background: #f4f3fa;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .apply-link {
+      flex: 0 0 auto;
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .apply-link:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive layout */
+    @media (max-width: 720px) {
+      .search-fields {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .field:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .search-button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        width: calc(100% - 30px);
+      }
+
+      .navbar {
+        min-height: 62px;
+      }
+
+      .brand {
+        font-size: 17px;
+      }
+
+      .nav-links {
+        gap: 0;
+      }
+
+      .nav-links a {
+        padding-inline: 9px;
+        font-size: 12px;
+      }
+
+      .intro {
+        padding: 36px 0 22px;
+      }
+
+      .intro p {
+        font-size: 13px;
+      }
+
+      .search-panel {
+        padding: 16px;
+        border-radius: 16px;
+      }
+
+      .search-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .field:first-child {
+        grid-column: auto;
+      }
+
+      .results-heading {
+        align-items: flex-start;
+      }
+
+      .results-heading h2 {
+        font-size: 17px;
+      }
+
+      .job-card {
+        padding: 16px;
+      }
+
+      .job-top {
+        gap: 8px;
+      }
+
+      .job-main {
+        gap: 10px;
+      }
+
+      .company-icon {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .job-title {
+        font-size: 14px;
+      }
+
+      .match-badge {
+        padding: 6px 8px;
+        font-size: 10px;
+      }
+
+      .job-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="brand" href="{{ url_for('home') }}">
+        Resume<span>Analyzer</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('product') }}">Services</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <header class="intro">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          AI-powered job discovery
+        </div>
+
+        <h1>Find your next <span class="gradient-text">opportunity</span></h1>
+
+        <p>
+          Search for roles by title, skills, or location. AI matching can be
+          connected to your resume and job listings when the backend is ready.
+        </p>
+      </header>
+
+      <section class="search-panel" aria-label="Search jobs">
+        <form class="search-fields" id="job-search-form">
+          <div class="field">
+            <label for="keywords">Job title or skills</label>
+            <input
+              id="keywords"
+              name="keywords"
+              type="search"
+              placeholder="e.g. Python developer, data analyst"
+            >
+          </div>
+
+          <div class="field">
+            <label for="location">Location</label>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              placeholder="City or remote"
+            >
+          </div>
+
+          <button class="search-button" type="submit">Search jobs</button>
+        </form>
+
+        <p class="search-note">
+          Search controls are ready for backend integration.
+        </p>
+      </section>
+
+      <section aria-labelledby="results-title">
+        <div class="results-heading">
+          <div>
+            <h2 id="results-title">Example opportunities</h2>
+            <p>Sample listings to preview the design</p>
+          </div>
+
+          <select class="sort-select" aria-label="Sort jobs">
+            <option>Most relevant</option>
+            <option>Most recent</option>
+          </select>
+        </div>
+
+        <div class="job-list">
+          <article class="job-card">
+            <div class="job-top">
+              <div class="job-main">
+                <div class="company-icon" aria-hidden="true">N</div>
+                <div>
+                  <h3 class="job-title">Junior Python Developer</h3>
+                  <p class="company-name">Northstar Technologies</p>
+                </div>
+              </div>
+              <span class="match-badge">Sample job</span>
+            </div>
+
+            <div class="job-details">
+              <span>📍 Remote</span>
+              <span>💼 Full-time</span>
+              <span>💰 Salary not provided</span>
+            </div>
+
+            <p class="job-description">
+              Help build and maintain web applications, work with APIs, and
+              collaborate with a product team on software projects.
+            </p>
+
+            <div class="job-footer">
+              <div class="job-tags">
+                <span class="tag">Python</span>
+                <span class="tag">Flask</span>
+                <span class="tag">SQL</span>
+              </div>
+              <a class="apply-link" href="#">View opportunity →</a>
+            </div>
+          </article>
+
+          <article class="job-card">
+            <div class="job-top">
+              <div class="job-main">
+                <div class="company-icon" aria-hidden="true">A</div>
+                <div>
+                  <h3 class="job-title">Data Analyst</h3>
+                  <p class="company-name">Atlas Insights</p>
+                </div>
+              </div>
+              <span class="match-badge">Sample job</span>
+            </div>
+
+            <div class="job-details">
+              <span>📍 Hybrid</span>
+              <span>💼 Full-time</span>
+              <span>💰 Salary not provided</span>
+            </div>
+
+            <p class="job-description">
+              Analyze datasets, create reports and dashboards, and share
+              useful findings with teams across the business.
+            </p>
+
+            <div class="job-footer">
+              <div class="job-tags">
+                <span class="tag">SQL</span>
+                <span class="tag">Excel</span>
+                <span class="tag">Data visualization</span>
+              </div>
+              <a class="apply-link" href="#">View opportunity →</a>
+            </div>
+          </article>
+
+          <article class="job-card">
+            <div class="job-top">
+              <div class="job-main">
+                <div class="company-icon" aria-hidden="true">C</div>
+                <div>
+                  <h3 class="job-title">Frontend Developer</h3>
+                  <p class="company-name">Clover Digital</p>
+                </div>
+              </div>
+              <span class="match-badge">Sample job</span>
+            </div>
+
+            <div class="job-details">
+              <span>📍 Remote</span>
+              <span>💼 Contract</span>
+              <span>💰 Salary not provided</span>
+            </div>
+
+            <p class="job-description">
+              Build responsive user interfaces and work with designers and
+              backend developers to improve web products.
+            </p>
+
+            <div class="job-footer">
+              <div class="job-tags">
+                <span class="tag">JavaScript</span>
+                <span class="tag">HTML</span>
+                <span class="tag">CSS</span>
+              </div>
+              <a class="apply-link" href="#">View opportunity →</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    document
+      .getElementById("job-search-form")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        alert("The search page is ready. Connect the search form to the backend to return real jobs.");
+      });
+  </script>
+</body>
+</html>

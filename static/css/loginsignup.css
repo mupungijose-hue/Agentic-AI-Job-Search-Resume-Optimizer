@@ -1,0 +1,335 @@
+/* Reset and global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --ink: #17152d;
+  --muted: #68677d;
+  --primary: #6957e8;
+  --primary-dark: #5140cd;
+  --accent: #c64fd0;
+  --border: rgba(32, 28, 74, 0.12);
+  --surface: #ffffff;
+}
+
+html {
+  min-height: 100%;
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+  background-color: #f7f6ff;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Login form container */
+.container {
+  width: min(420px, calc(100% - 36px));
+  margin: clamp(36px, 8vh, 76px) auto;
+  padding: clamp(26px, 5vw, 38px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 24px 70px rgba(37, 29, 91, 0.16),
+    0 4px 14px rgba(37, 29, 91, 0.05);
+  text-align: left;
+  backdrop-filter: blur(12px);
+}
+
+.menu {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Headings and text */
+h2 {
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+p {
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+p a {
+  color: var(--primary-dark);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+p a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* Form */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin: 0 0 7px 2px;
+  color: #4b4960;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  min-height: 48px;
+  margin-bottom: 17px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  background: #fbfaff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+input::placeholder {
+  color: #a09eb0;
+}
+
+input:hover {
+  border-color: rgba(105, 87, 232, 0.35);
+}
+
+input:focus {
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(105, 87, 232, 0.12);
+}
+
+/* Form buttons */
+button,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 11px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow: 0 9px 20px rgba(105, 87, 232, 0.23);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+button:hover,
+.btn:hover {
+  box-shadow: 0 12px 25px rgba(105, 87, 232, 0.3);
+  filter: saturate(1.08);
+  transform: translateY(-2px);
+}
+
+button:active,
+.btn:active {
+  transform: translateY(0);
+}
+
+button:focus-visible,
+.btn:focus-visible,
+.nav__links a:focus-visible {
+  outline: 3px solid rgba(105, 87, 232, 0.35);
+  outline-offset: 3px;
+}
+
+/* Shared button classes */
+.btnSignup {
+  color: #fff;
+  background: var(--primary);
+}
+
+.btnLogin {
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: 0 3px 10px rgba(37, 29, 91, 0.05);
+  text-decoration: none;
+}
+
+.btnLogin:hover {
+  color: var(--primary-dark);
+  background: #f6f4ff;
+  box-shadow: 0 6px 16px rgba(37, 29, 91, 0.09);
+}
+
+/* Flash messages */
+.flashes {
+  margin-bottom: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.flashes li {
+  margin-bottom: 8px;
+  padding: 11px 13px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.success {
+  color: #17643a;
+  background: #eaf8ef;
+  border-color: #c8ecd4;
+}
+
+.error {
+  color: #9c2f3a;
+  background: #fff0f1;
+  border-color: #f4cdd1;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(1160px, calc(100% - 48px));
+  margin-inline: auto;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 24px;
+}
+
+.nav__logo img {
+  display: block;
+  width: 132px;
+  height: auto;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav__links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  color: #48465e;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 180ms ease;
+}
+
+.nav__links a:not(.btnLogin):hover {
+  color: var(--primary-dark);
+  background: #f4f2ff;
+}
+
+.nav__links .btnLogin {
+  gap: 9px;
+  min-height: 42px;
+  padding-inline: 20px;
+  border: 0;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow: 0 7px 18px rgba(105, 87, 232, 0.22);
+  font-weight: 600;
+}
+
+.nav__links .btnLogin:hover {
+  color: #fff;
+  box-shadow: 0 10px 23px rgba(105, 87, 232, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .container {
+    width: min(100% - 32px, 420px);
+    margin-block: 28px;
+    padding: 25px 22px;
+    border-radius: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  nav {
+    width: calc(100% - 32px);
+  }
+
+  .nav__header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav__logo img {
+    width: 116px;
+  }
+
+  .nav__links {
+    gap: 4px;
+  }
+
+  .nav__links a {
+    padding-inline: 11px;
+    font-size: 13px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
